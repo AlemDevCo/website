@@ -1,5 +1,3 @@
-// app.js
-
 function handleFile() {
     const input = document.getElementById('fileInput');
     const file = input.files[0];
@@ -11,13 +9,13 @@ function handleFile() {
             const content = e.target.result;
 
             try {
-                const placeStructure = parseRBX(content);
+                const screenGui = parseRBXMXML(content);
 
-                // Display the entire place structure (replace this with your actual rendering logic)
-                console.log("Parsed Place Structure:", placeStructure);
+                // Display the entire ScreenGui structure (replace this with your actual rendering logic)
+                renderScreenGui(screenGui);
             } catch (error) {
                 console.error("Error parsing file:", error);
-                alert("Error parsing file. Please check if it's a valid RBXM or RBXL file.");
+                alert("Error parsing file. Please check if it's a valid RBXM file.");
             }
         };
 
@@ -27,21 +25,21 @@ function handleFile() {
     }
 }
 
-function parseRBX(content) {
+function parseRBXMXML(content) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(content, 'text/xml');
-    
-    const placeElement = xmlDoc.getElementsByTagName('Roblox')[0] || xmlDoc.getElementsByTagName('Place')[0];
 
-    if (!placeElement) {
-        throw new Error('No Roblox or Place element found in the RBXM/RBXL file.');
+    const screenGuiElement = xmlDoc.getElementsByTagName('ScreenGui')[0];
+
+    if (!screenGuiElement) {
+        throw new Error('No ScreenGui element found in the RBXM file.');
     }
 
-    return parsePlaceElement(placeElement);
+    return parseGuiElement(screenGuiElement);
 }
 
-function parsePlaceElement(element) {
-    const placeStructure = {
+function parseGuiElement(element) {
+    const guiElement = {
         type: element.tagName,
         attributes: {},
         children: [],
@@ -50,15 +48,37 @@ function parsePlaceElement(element) {
     // Extract attributes
     for (let i = 0; i < element.attributes.length; i++) {
         const attribute = element.attributes[i];
-        placeStructure.attributes[attribute.name] = attribute.value;
+        guiElement.attributes[attribute.name] = attribute.value;
     }
 
     // Recursively parse children elements
     for (let i = 0; i < element.children.length; i++) {
         const child = element.children[i];
-        const childElement = parsePlaceElement(child);
-        placeStructure.children.push(childElement);
+        const childElement = parseGuiElement(child);
+        guiElement.children.push(childElement);
     }
 
-    return placeStructure;
+    return guiElement;
+}
+
+function renderScreenGui(screenGui) {
+    const screenGuiElement = renderGuiElement(screenGui);
+    document.body.appendChild(screenGuiElement);
+}
+
+function renderGuiElement(guiElement) {
+    const element = document.createElement(guiElement.type);
+
+    // Set attributes
+    for (const [key, value] of Object.entries(guiElement.attributes)) {
+        element.setAttribute(key, value);
+    }
+
+    // Recursively render children
+    guiElement.children.forEach(child => {
+        const childElement = renderGuiElement(child);
+        element.appendChild(childElement);
+    });
+
+    return element;
 }
