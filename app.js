@@ -64,6 +64,12 @@ function renderGuiElement(guiElement) {
         element.setAttribute(key, value);
     }
 
+    // Special handling for Frame to avoid unintended red rectangles
+    if (guiElement.type === 'Frame') {
+        // Set background color to transparent (you can customize this as needed)
+        element.style.backgroundColor = 'transparent';
+    }
+
     // Recursively render children
     guiElement.children.forEach(child => {
         const childElement = renderGuiElement(child);
@@ -72,3 +78,4 @@ function renderGuiElement(guiElement) {
 
     return element;
 }
+
