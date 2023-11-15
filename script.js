@@ -10,15 +10,8 @@ function uploadFile() {
         reader.onload = function(e) {
             var content = e.target.result;
 
-            try {
-                // Parse RBXM or XML content
-                var parsedData = parseContent(content);
-
-                // Render GUI on the webpage
-                renderGUI(parsedData, guiContainer);
-            } catch (error) {
-                alert('Error parsing the file: ' + error.message);
-            }
+            // Display the content in the #guiContainer
+            guiContainer.textContent = content;
         };
 
         reader.readAsText(file);
@@ -26,6 +19,7 @@ function uploadFile() {
         alert('Please select a file.');
     }
 }
+
 
 function parseContent(content) {
     // Implement RBXM parsing logic using DOMParser
