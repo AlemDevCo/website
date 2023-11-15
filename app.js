@@ -11,13 +11,13 @@ function handleFile() {
             const content = e.target.result;
 
             try {
-                const guiElements = parseRBXMXML(content);
+                const placeStructure = parseRBX(content);
 
-                // Display GUI elements (replace this with your actual rendering logic)
-                console.log("Parsed GUI Elements:", guiElements);
+                // Display the entire place structure (replace this with your actual rendering logic)
+                console.log("Parsed Place Structure:", placeStructure);
             } catch (error) {
                 console.error("Error parsing file:", error);
-                alert("Error parsing file. Please check if it's a valid RBXM/XML file.");
+                alert("Error parsing file. Please check if it's a valid RBXM or RBXL file.");
             }
         };
 
@@ -27,32 +27,38 @@ function handleFile() {
     }
 }
 
-function parseRBXMXML(content) {
-    // Implement your parsing logic here
-    // This is a simplified example; you may need to use a library or more advanced logic
+function parseRBX(content) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(content, 'text/xml');
     
-    const guiElements = [];
+    const placeElement = xmlDoc.getElementsByTagName('Roblox')[0] || xmlDoc.getElementsByTagName('Place')[0];
 
-    // Example: Extracting Frame elements
-    const frameElements = xmlDoc.getElementsByTagName('Frame');
-    for (let i = 0; i < frameElements.length; i++) {
-        const frame = frameElements[i];
-        const frameAttributes = {};
-
-        for (let j = 0; j < frame.attributes.length; j++) {
-            const attribute = frame.attributes[j];
-            frameAttributes[attribute.name] = attribute.value;
-        }
-
-        guiElements.push({
-            type: 'Frame',
-            attributes: frameAttributes,
-        });
+    if (!placeElement) {
+        throw new Error('No Roblox or Place element found in the RBXM/RBXL file.');
     }
 
-    // Extend this logic to handle other GUI element types (TextButton, ScrollingFrame, etc.)
+    return parsePlaceElement(placeElement);
+}
 
-    return guiElements;
+function parsePlaceElement(element) {
+    const placeStructure = {
+        type: element.tagName,
+        attributes: {},
+        children: [],
+    };
+
+    // Extract attributes
+    for (let i = 0; i < element.attributes.length; i++) {
+        const attribute = element.attributes[i];
+        placeStructure.attributes[attribute.name] = attribute.value;
+    }
+
+    // Recursively parse children elements
+    for (let i = 0; i < element.children.length; i++) {
+        const child = element.children[i];
+        const childElement = parsePlaceElement(child);
+        placeStructure.children.push(childElement);
+    }
+
+    return placeStructure;
 }
