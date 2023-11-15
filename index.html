@@ -3,14 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RBXM Viewer</title>
     <link rel="stylesheet" href="styles.css">
+    <title>RBXM Viewer</title>
 </head>
 <body>
-    <input type="file" id="fileInput" accept=".rbxm" />
-    <label for="fileInput">Choose File</label>
-    <button onclick="handleFile()">Load File</button>
-
-    <script src="app.js"></script>
+    <header>
+        <h1>RBXM Viewer</h1>
+    </header>
+    <main>
+        <section>
+            <label for="fileInput">Upload RBXM or XML File:</label>
+            <input type="file" id="fileInput" accept=".rbxm, .xml">
+            <button onclick="uploadFile()">Upload</button>
+        </section>
+        <section id="guiContainer">
+            <!-- Dynamic GUI rendering will happen here -->
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 RBXM Viewer</p>
+    </footer>
+    <script src="script.js"></script>
 </body>
 </html>
