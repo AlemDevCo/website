@@ -10,7 +10,7 @@ function uploadFile() {
         reader.onload = function(e) {
             var content = e.target.result;
 
-            // Display the content in the #guiContainer
+            // Display the raw content in the #guiContainer
             guiContainer.textContent = content;
         };
 
@@ -19,6 +19,7 @@ function uploadFile() {
         alert('Please select a file.');
     }
 }
+
 
 
 function parseContent(content) {
