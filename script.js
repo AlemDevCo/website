@@ -11,8 +11,20 @@ function uploadFile() {
             var content = e.target.result;
             var byteArray = new Uint8Array(content);
 
-            // Display the byte values in the #guiContainer
-            guiContainer.textContent = Array.from(byteArray).join(', ');
+            // Display the hexadecimal representation of byte values in the #guiContainer
+            guiContainer.textContent = byteArray.reduce(function(hexString, byte) {
+                return hexString + byte.toString(16).padStart(2, '0') + ' ';
+            }, '');
+
+            try {
+                // Parse RBXM or XML content
+                var parsedData = parseContent(content);
+
+                // Render GUI on the webpage
+                renderGUI(parsedData, guiContainer);
+            } catch (error) {
+                alert('Error parsing the file: ' + error.message);
+            }
         };
 
         reader.readAsArrayBuffer(file);
