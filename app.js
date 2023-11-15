@@ -15,7 +15,7 @@ function handleFile() {
                 renderScreenGui(screenGui);
             } catch (error) {
                 console.error("Error parsing file:", error);
-                alert("Error parsing file. Please check if it's a valid RBXM file.");
+                alert(`Error parsing file: ${error.message}`);
             }
         };
 
@@ -32,6 +32,7 @@ function parseRBXMXML(content) {
     const screenGuiElement = xmlDoc.getElementsByTagName('ScreenGui')[0];
 
     if (!screenGuiElement) {
+        console.error("No ScreenGui element found in the RBXM file.");
         throw new Error('No ScreenGui element found in the RBXM file.');
     }
 
