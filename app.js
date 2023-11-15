@@ -9,11 +9,11 @@ function handleFile() {
             const content = e.target.result;
 
             try {
-                const screenGui = parseRBXMXML(content);
+                const guiStructure = parseRBXMXML(content);
 
-                // Display the entire ScreenGui structure (replace this with your actual rendering logic)
-                const screenGuiElement = renderGuiElement(screenGui);
-                document.body.appendChild(screenGuiElement);
+                // Display the entire GUI structure (replace this with your actual rendering logic)
+                const guiElement = renderGuiElement(guiStructure);
+                document.body.appendChild(guiElement);
             } catch (error) {
                 console.error("Error parsing file:", error);
                 alert(`Error parsing file: ${error.message}`);
@@ -30,34 +30,7 @@ function parseRBXMXML(content) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(content, 'text/xml');
 
-    // Find the first ScreenGui element
-    const screenGuiElement = findScreenGuiElement(xmlDoc);
-
-    // If ScreenGui not found, create a new one
-    if (!screenGuiElement) {
-        const newScreenGui = xmlDoc.createElement('ScreenGui');
-        xmlDoc.documentElement.appendChild(newScreenGui);
-        return parseGuiElement(newScreenGui);
-    }
-
-    return parseGuiElement(screenGuiElement);
-}
-
-function findScreenGuiElement(element) {
-    // Check if the current element is a ScreenGui
-    if (element.tagName === 'ScreenGui') {
-        return element;
-    }
-
-    // Recursively search for ScreenGui in children
-    for (let i = 0; i < element.children.length; i++) {
-        const childScreenGui = findScreenGuiElement(element.children[i]);
-        if (childScreenGui) {
-            return childScreenGui;
-        }
-    }
-
-    return null;
+    return parseGuiElement(xmlDoc.documentElement);
 }
 
 function parseGuiElement(element) {
