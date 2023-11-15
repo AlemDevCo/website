@@ -12,7 +12,8 @@ function handleFile() {
                 const screenGui = parseRBXMXML(content);
 
                 // Display the entire ScreenGui structure (replace this with your actual rendering logic)
-                renderScreenGui(screenGui);
+                const screenGuiElement = renderGuiElement(screenGui);
+                document.body.appendChild(screenGuiElement);
             } catch (error) {
                 console.error("Error parsing file:", error);
                 alert(`Error parsing file: ${error.message}`);
@@ -29,11 +30,8 @@ function parseRBXMXML(content) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(content, 'text/xml');
 
-    // Get all elements in the XML structure
-    const allElements = xmlDoc.getElementsByTagName('*');
-
-    // Find the first element that represents a ScreenGui
-    const screenGuiElement = findScreenGuiElement(allElements);
+    // Find the first ScreenGui element
+    const screenGuiElement = findScreenGuiElement(xmlDoc);
 
     // If ScreenGui not found, create a new one
     if (!screenGuiElement) {
@@ -45,11 +43,17 @@ function parseRBXMXML(content) {
     return parseGuiElement(screenGuiElement);
 }
 
-function findScreenGuiElement(elements) {
-    // Iterate through elements to find the first ScreenGui element
-    for (let i = 0; i < elements.length; i++) {
-        if (elements[i].tagName === 'ScreenGui') {
-            return elements[i];
+function findScreenGuiElement(element) {
+    // Check if the current element is a ScreenGui
+    if (element.tagName === 'ScreenGui') {
+        return element;
+    }
+
+    // Recursively search for ScreenGui in children
+    for (let i = 0; i < element.children.length; i++) {
+        const childScreenGui = findScreenGuiElement(element.children[i]);
+        if (childScreenGui) {
+            return childScreenGui;
         }
     }
 
@@ -77,11 +81,6 @@ function parseGuiElement(element) {
     }
 
     return guiElement;
-}
-
-function renderScreenGui(screenGui) {
-    const screenGuiElement = renderGuiElement(screenGui);
-    document.body.appendChild(screenGuiElement);
 }
 
 function renderGuiElement(guiElement) {
