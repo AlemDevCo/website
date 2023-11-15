@@ -29,7 +29,11 @@ function parseRBXMXML(content) {
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(content, 'text/xml');
 
-    const screenGuiElement = xmlDoc.getElementsByTagName('ScreenGui')[0];
+    // Get all elements in the XML structure
+    const allElements = xmlDoc.getElementsByTagName('*');
+
+    // Find the first element that represents a ScreenGui
+    const screenGuiElement = findScreenGuiElement(allElements);
 
     if (!screenGuiElement) {
         console.error("No ScreenGui element found in the RBXM file.");
@@ -37,6 +41,17 @@ function parseRBXMXML(content) {
     }
 
     return parseGuiElement(screenGuiElement);
+}
+
+function findScreenGuiElement(elements) {
+    // Iterate through elements to find the first ScreenGui element
+    for (let i = 0; i < elements.length; i++) {
+        if (elements[i].tagName === 'ScreenGui') {
+            return elements[i];
+        }
+    }
+
+    return null;
 }
 
 function parseGuiElement(element) {
