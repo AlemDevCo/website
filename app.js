@@ -35,9 +35,11 @@ function parseRBXMXML(content) {
     // Find the first element that represents a ScreenGui
     const screenGuiElement = findScreenGuiElement(allElements);
 
+    // If ScreenGui not found, create a new one
     if (!screenGuiElement) {
-        console.error("No ScreenGui element found in the RBXM file.");
-        throw new Error('No ScreenGui element found in the RBXM file.');
+        const newScreenGui = xmlDoc.createElement('ScreenGui');
+        xmlDoc.documentElement.appendChild(newScreenGui);
+        return parseGuiElement(newScreenGui);
     }
 
     return parseGuiElement(screenGuiElement);
