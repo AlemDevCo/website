@@ -9,18 +9,17 @@ function uploadFile() {
 
         reader.onload = function(e) {
             var content = e.target.result;
+            var byteArray = new Uint8Array(content);
 
-            // Display the raw content in the #guiContainer
-            guiContainer.textContent = content;
+            // Display the byte values in the #guiContainer
+            guiContainer.textContent = Array.from(byteArray).join(', ');
         };
 
-        reader.readAsText(file);
+        reader.readAsArrayBuffer(file);
     } else {
         alert('Please select a file.');
     }
 }
-
-
 
 function parseContent(content) {
     // Implement RBXM parsing logic using DOMParser
